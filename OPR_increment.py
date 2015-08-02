@@ -10,14 +10,17 @@ import random, os,subprocess
 contFile = 'nls_control.d'
 compFile = 'compile.sh'
 exFile = 'nls.bash'
-Nruns = 1
-nH2 = 1E4
-OPR_min = 1E-18
-OPR_max = 1E-14
+Nruns = 500 
+nH2 = 0.499975 
+OPR_min = 0.001 
+OPR_max = 3 
 OPR_inc = (OPR_max - OPR_min)/Nruns
 
 
 os.system('rm -rf OPR_run*')
+os.system('rm OPR.out')
+
+results = 'OPR.out'
 
 temp_OPR = OPR_min
 for i in range(0,Nruns):
@@ -33,8 +36,11 @@ for i in range(0,Nruns):
     temp_OPR = temp_OPR + OPR_inc
     pH2 = nH2/(1+temp_OPR)
     oH2 = temp_OPR*pH2
-    print temp_OPR,oH2,pH2
-    print oH2 + pH2
+    temp_sum = oH2 + pH2
+    temp_res =  str(temp_OPR) + ',' + str(oH2) + ',' + str(pH2) + ',' + str(temp_sum) + '\n'
+    resf = open(results,'a')
+    resf.write(temp_res)
+    resf.close()
 
     #Edit the input files
     infile = './' + temp_path + '/' + contFile
@@ -59,18 +65,18 @@ for i in range(0,Nruns):
             outf.write(line)
     outf.close()
     
-#    #Change into new directory
-#    os.chdir(temp_path)
-#    
-#    #Recompile with os
-#    print 'Now recompiling'
-#    cmd = './' + compFile
-#    subprocess.call(cmd,shell=True)
-#
-#    #Run with os
-#    print 'Starting Nautilus'
-#    cmd = './'  + exFile
-#    subprocess.call(cmd,shell=True)
-#
-#    #Change back into home directory
-#    os.chdir('..')
+    #Change into new directory
+    os.chdir(temp_path)
+    
+    #Recompile with os
+    print 'Now recompiling'
+    cmd = './' + compFile
+    subprocess.call(cmd,shell=True)
+
+    #Run with os
+    print 'Starting Nautilus'
+    cmd = './'  + exFile
+    subprocess.call(cmd,shell=True)
+
+    #Change back into home directory
+    os.chdir('..')
