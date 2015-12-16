@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This script scrubs a file of reactions containing certain species
+This script calls the function that renumbers reactions in a nautilus compatible network 
 
 @author: cns
 """
